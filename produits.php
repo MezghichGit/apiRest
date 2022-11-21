@@ -20,6 +20,11 @@ switch($request_method) {
 			// Ajouter un produit
 			AddProduct();
 			break;
+    case 'PUT':
+            // Modifier un produit
+            $id = intval($_GET["id"]);
+            updateProduct($id);
+            break;
     default:
         // Invalid Request Method
         header("HTTP/1.0 405 Method Not Allowed");
@@ -40,7 +45,8 @@ function AddProduct()
     $modified = date('Y-m-d H:i:s');
 
 
-    echo $query="INSERT INTO produit(name, description, price, category_id, created, modified) VALUES('".$name."', '".$description."', '".$price."', '".$category."', '".$created."', '".$modified."')";
+    //echo 
+    $query="INSERT INTO produit(name, description, price, category_id, created, modified) VALUES('".$name."', '".$description."', '".$price."', '".$category."', '".$created."', '".$modified."')";
     
     if(mysqli_query($conn, $query))
     {
@@ -88,6 +94,39 @@ function getProducts()
 		{
 			$response[] = $row;
 		}
+		header('Content-Type: application/json');
+		echo json_encode($response);
+	}
+
+    function updateProduct($id)
+	{
+		global $conn;
+        $data = json_decode(file_get_contents('php://input'), true);
+        $name = $data["name"];
+        $description = $data["description"];
+        $price = $data["price"];
+        $category = $data["category"];
+
+		$created = 'NULL';
+		$modified = date('Y-m-d H:i:s');
+		$query="UPDATE produit SET name='".$name."', description='".$description."', price='".$price."', category_id='".$category."', modified='".$modified."' WHERE id=".$id;
+		
+		if(mysqli_query($conn, $query))
+		{
+			$response=array(
+				'status' => 1,
+				'status_message' =>'Produit mis a jour avec succes.'
+			);
+		}
+		else
+		{
+			$response=array(
+				'status' => 0,
+				'status_message' =>'Echec de la mise a jour de produit. '. mysqli_error($conn)
+			);
+			
+		}
+		
 		header('Content-Type: application/json');
 		echo json_encode($response);
 	}
