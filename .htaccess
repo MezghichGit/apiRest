@@ -5,4 +5,7 @@
 
 RewriteEngine On
 RewriteRule ^produits/?$ produits.php [NC,L]
-RewriteRule ^[^/]+/(\d+)$ produits.php?id=$1​
+RewriteRule ^[^/]+/(\d+)$ produits.php?id=$1
+
+RewriteRule ^user/?$ produit.php [NC,L]
+RewriteRule ^[^/]+/(\d+)$ user.php?id=$1​
